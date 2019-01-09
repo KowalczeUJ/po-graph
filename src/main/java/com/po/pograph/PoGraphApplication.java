@@ -1,13 +1,13 @@
 package com.po.pograph;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 
 @SpringBootApplication
 public class PoGraphApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(PoGraphApplication.class, args);
+        new SpringApplicationBuilder(PoGraphApplication.class).run(args);
     }
 
 }
