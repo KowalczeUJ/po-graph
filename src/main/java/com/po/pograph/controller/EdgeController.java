@@ -58,7 +58,7 @@ public class EdgeController {
 
         } else {
             if (nodeList.contains(node2_id)) {
-                //nodeList does not have connection to node2_id.
+                //nodeList does have connection to node2_id.
                 nodeList.remove(node2_id);
             }
         }
