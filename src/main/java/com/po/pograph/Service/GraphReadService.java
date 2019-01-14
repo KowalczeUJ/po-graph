@@ -15,7 +15,7 @@ import java.util.Scanner;
 public class GraphReadService {
 
     @Getter
-    private Graph readGraph;
+    private static Graph readGraph;
 
 
     @PostConstruct
