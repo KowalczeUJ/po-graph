@@ -1,6 +1,6 @@
 package com.po.pograph.controller;
 
-import com.po.pograph.domain.Graph;
+import com.po.pograph.graph.Graph;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

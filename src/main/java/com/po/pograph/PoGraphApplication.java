@@ -8,6 +8,8 @@ public class PoGraphApplication {
 
     public static void main(String[] args) {
         new SpringApplicationBuilder(PoGraphApplication.class).run(args);
+
+
     }
 
 }
