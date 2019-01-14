@@ -1,7 +1,7 @@
 package com.po.pograph.controller;
 
-import com.po.pograph.Service.GraphReadService;
 import com.po.pograph.graph.Graph;
+import com.po.pograph.service.GraphReadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,54 +19,47 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping("/edge")
 public class EdgeController {
 
+    private final GraphReadService graphReadService;
+
     @Autowired
-    private GraphReadService graphReadService;
+    public EdgeController(GraphReadService graphReadService) {
+        this.graphReadService = graphReadService;
+    }
 
     @ResponseBody
-    @GetMapping(path = "add", produces = APPLICATION_JSON_VALUE)
-    public Graph addEdge(@RequestParam("node1_id") int node1_id, @RequestParam("node2_id") int node2_id) {
-
+    @GetMapping(path = "/add", produces = APPLICATION_JSON_VALUE)
+    public Graph addEdge(@RequestParam("node1_id") int firstNodeId, @RequestParam("node2_id") int secondNodeId) {
         Graph graph = graphReadService.getReadGraph();
 
-        ArrayList<Integer> nodeList1 =  graph.nodes.get(node1_id);
-        ArrayList<Integer> nodeList2 =  graph.nodes.get(node2_id);
+        ArrayList<Integer> nodeList1 =  graph.nodes.get(firstNodeId);
+        ArrayList<Integer> nodeList2 =  graph.nodes.get(secondNodeId);
 
         if (nodeList1 == null || nodeList2 == null) {
             //Node does not exist
             return graph;
-
         } else {
-            if (!nodeList1.contains(node2_id) && !nodeList2.contains(node1_id)) {
-                //nodeList does not have connection to node2_id, and we could only one connection between nodes
-                nodeList1.add(node2_id);
+            if (!nodeList1.contains(secondNodeId) && !nodeList2.contains(firstNodeId)) {
+                //nodeList does not have connection to secondNodeId, and we could only one connection between nodes
+                nodeList1.add(secondNodeId);
             }
         }
-
         return graph;
-
     }
 
     @ResponseBody
     @DeleteMapping(path = "/delete", produces = APPLICATION_JSON_VALUE)
-    public Graph deleteEdge(@RequestParam("node1_id") int node1_id, @RequestParam("node2_id") int node2_id) {
+    public Graph deleteEdge(@RequestParam("node1_id") int firstNodeId, @RequestParam("node2_id") int secondNodeId) {
 
         Graph graph = graphReadService.getReadGraph();
 
-        ArrayList<Integer> nodeList1 = graph.nodes.get(node1_id);
-        ArrayList<Integer> nodeList2 = graph.nodes.get(node2_id);
-
+        ArrayList<Integer> nodeList1 = graph.nodes.get(firstNodeId);
+        ArrayList<Integer> nodeList2 = graph.nodes.get(secondNodeId);
 
         int referenceCounter = 0;
 
         for (Map.Entry<Integer, ArrayList<Integer>> entry : graph.nodes.entrySet()) {
-
-
-            if (entry.getKey() != node1_id) {
-
-                if (entry.getValue().contains(node2_id)) {
-                    referenceCounter++;
-                }
-
+            if (entry.getKey() != firstNodeId && entry.getValue().contains(secondNodeId)) {
+                referenceCounter++;
             }
         }
 
@@ -74,18 +67,15 @@ public class EdgeController {
         if (referenceCounter < 1) {
             return graph;
         }
-
         if (nodeList1 == null || nodeList2 == null) {
             //Node does not exist
             return graph;
-
         } else {
-            if (nodeList1.contains(node2_id)) {
-                //nodeList does have connection to node2_id.
-                nodeList1.remove(node2_id);
+            if (nodeList1.contains(secondNodeId)) {
+                //nodeList does have connection to secondNodeId.
+                nodeList1.remove(secondNodeId);
             }
         }
-
         return graph;
     }
 
