@@ -30,21 +30,24 @@ public class VertexController {
         Graph graph = graphReadService.getReadGraph();
 
         ArrayList<Integer> nodeList =  graph.nodes.get(nodeId);
+        ArrayList<Integer> nodePrecursorList = graph.nodes.get(precursorId);
 
-        if (nodeList == null) {
-            //Node does not exist
+        if (nodePrecursorList == null) {
+            return graph;
+        }
+
+        if (nodeList != null) {
+            //Node does already exists
             return graph;
 
         } else {
 
-             if (nodeList.contains(precursorId)) {
-                 //Precursor id is already exists
-                 return graph;
-             } else {
-                 //Add precursor
-                 nodeList.add(precursorId);
-             }
+            graph.nodes.put(nodeId, new ArrayList<>());
+
         }
+
+        nodePrecursorList.add(nodeId);
+
 
         return graph;
     }
@@ -71,7 +74,6 @@ public class VertexController {
         }
 
         return graph;
-
 
     }
 

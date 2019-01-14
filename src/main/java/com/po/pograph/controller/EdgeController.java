@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -27,16 +28,17 @@ public class EdgeController {
 
         Graph graph = graphReadService.getReadGraph();
 
-        ArrayList<Integer> nodeList =  graph.nodes.get(node1_id);
+        ArrayList<Integer> nodeList1 =  graph.nodes.get(node1_id);
+        ArrayList<Integer> nodeList2 =  graph.nodes.get(node2_id);
 
-        if (nodeList == null) {
+        if (nodeList1 == null || nodeList2 == null) {
             //Node does not exist
             return graph;
 
         } else {
-            if (!nodeList.contains(node2_id)) {
-                //nodeList does not have connection to node2_id.
-                nodeList.add(node2_id);
+            if (!nodeList1.contains(node2_id) && !nodeList2.contains(node1_id)) {
+                //nodeList does not have connection to node2_id, and we could only one connection between nodes
+                nodeList1.add(node2_id);
             }
         }
 
@@ -50,16 +52,37 @@ public class EdgeController {
 
         Graph graph = graphReadService.getReadGraph();
 
-        ArrayList<Integer> nodeList =  graph.nodes.get(node1_id);
+        ArrayList<Integer> nodeList1 = graph.nodes.get(node1_id);
+        ArrayList<Integer> nodeList2 = graph.nodes.get(node2_id);
 
-        if (nodeList == null) {
+
+        int referenceCounter = 0;
+
+        for (Map.Entry<Integer, ArrayList<Integer>> entry : graph.nodes.entrySet()) {
+
+
+            if (entry.getKey() != node1_id) {
+
+                if (entry.getValue().contains(node2_id)) {
+                    referenceCounter++;
+                }
+
+            }
+        }
+
+        //Node must has reference from another nodes.
+        if (referenceCounter < 1) {
+            return graph;
+        }
+
+        if (nodeList1 == null || nodeList2 == null) {
             //Node does not exist
             return graph;
 
         } else {
-            if (nodeList.contains(node2_id)) {
+            if (nodeList1.contains(node2_id)) {
                 //nodeList does have connection to node2_id.
-                nodeList.remove(node2_id);
+                nodeList1.remove(node2_id);
             }
         }
 
