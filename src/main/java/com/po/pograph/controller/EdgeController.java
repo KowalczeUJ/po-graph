@@ -3,9 +3,7 @@ package com.po.pograph.controller;
 import com.po.pograph.graph.Graph;
 import com.po.pograph.service.GraphReadService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +14,6 @@ import java.util.Map;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping("/edge")
 public class EdgeController {
 
     private final GraphReadService graphReadService;
@@ -27,7 +24,7 @@ public class EdgeController {
     }
 
     @ResponseBody
-    @GetMapping(path = "/add", produces = APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/addlink", produces = APPLICATION_JSON_VALUE)
     public Graph addEdge(@RequestParam("node1_id") int firstNodeId, @RequestParam("node2_id") int secondNodeId) {
         Graph graph = graphReadService.getReadGraph();
 
@@ -47,7 +44,7 @@ public class EdgeController {
     }
 
     @ResponseBody
-    @DeleteMapping(path = "/delete", produces = APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/removelink", produces = APPLICATION_JSON_VALUE)
     public Graph deleteEdge(@RequestParam("node1_id") int firstNodeId, @RequestParam("node2_id") int secondNodeId) {
 
         Graph graph = graphReadService.getReadGraph();

@@ -4,7 +4,6 @@ import com.po.pograph.graph.Graph;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -16,21 +15,15 @@ public class GraphReadService {
     @Getter
     private Graph readGraph;
 
-    @PostConstruct
-    public Graph init() {
+    public void loadGraph(String fileName) {
         String workDirectory = System.getProperty("user.dir");
-        readGraph =  this.loadGraph(workDirectory + "/src/main/resources/Input.txt");
-        return readGraph;
-
-    }
-
-    private Graph loadGraph(String fileName) {
+        String fullPath = workDirectory + "/src/main/resources/" + fileName;
         Graph graph = null;
 
         int numberOfNodes = 0;
         String temp;
 
-        try (Scanner in = new Scanner(new FileReader(fileName))) {
+        try (Scanner in = new Scanner(new FileReader(fullPath))) {
             while (in.hasNextLine()) {
                 //Reading
                 if (numberOfNodes <= 0) {
@@ -39,8 +32,6 @@ public class GraphReadService {
 
                     if (numberOfNodes > 0) {
                         graph = new Graph(numberOfNodes);
-                    } else {
-                        return null;
                     }
                     continue;
                 } else {
@@ -73,7 +64,7 @@ public class GraphReadService {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        return graph;
+        this.readGraph = graph;
     }
 }
 
