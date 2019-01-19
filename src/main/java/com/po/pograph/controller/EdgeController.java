@@ -1,10 +1,11 @@
 package com.po.pograph.controller;
 
 import com.po.pograph.graph.Graph;
+import com.po.pograph.operation.EdgeNode;
 import com.po.pograph.service.GraphReadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,19 +26,19 @@ public class EdgeController {
 
     @ResponseBody
     @PutMapping(path = "/addlink", produces = APPLICATION_JSON_VALUE)
-    public Graph addEdge(@RequestParam("node1_id") int firstNodeId, @RequestParam("node2_id") int secondNodeId) {
+    public Graph addEdge(@RequestBody EdgeNode nodes) {
         Graph graph = graphReadService.getReadGraph();
 
-        ArrayList<Integer> nodeList1 =  graph.nodes.get(firstNodeId);
-        ArrayList<Integer> nodeList2 =  graph.nodes.get(secondNodeId);
+        ArrayList<Integer> nodeList1 =  graph.nodes.get(nodes.getNode1Id());
+        ArrayList<Integer> nodeList2 =  graph.nodes.get(nodes.getNode2Id());
 
         if (nodeList1 == null || nodeList2 == null) {
             //Node does not exist
             return graph;
         } else {
-            if (!nodeList1.contains(secondNodeId) && !nodeList2.contains(firstNodeId)) {
+            if (!nodeList1.contains(nodes.getNode2Id()) && !nodeList2.contains(nodes.getNode1Id())) {
                 //nodeList does not have connection to secondNodeId, and we could only one connection between nodes
-                nodeList1.add(secondNodeId);
+                nodeList1.add(nodes.getNode2Id());
             }
         }
         return graph;
@@ -45,17 +46,17 @@ public class EdgeController {
 
     @ResponseBody
     @PutMapping(path = "/removelink", produces = APPLICATION_JSON_VALUE)
-    public Graph deleteEdge(@RequestParam("node1_id") int firstNodeId, @RequestParam("node2_id") int secondNodeId) {
+    public Graph deleteEdge(@RequestBody EdgeNode nodes) {
 
         Graph graph = graphReadService.getReadGraph();
 
-        ArrayList<Integer> nodeList1 = graph.nodes.get(firstNodeId);
-        ArrayList<Integer> nodeList2 = graph.nodes.get(secondNodeId);
+        ArrayList<Integer> nodeList1 = graph.nodes.get(nodes.getNode1Id());
+        ArrayList<Integer> nodeList2 = graph.nodes.get(nodes.getNode2Id());
 
         int referenceCounter = 0;
 
         for (Map.Entry<Integer, ArrayList<Integer>> entry : graph.nodes.entrySet()) {
-            if (entry.getKey() != firstNodeId && entry.getValue().contains(secondNodeId)) {
+            if (entry.getKey() != nodes.getNode1Id() && entry.getValue().contains(nodes.getNode2Id())) {
                 referenceCounter++;
             }
         }
@@ -68,9 +69,9 @@ public class EdgeController {
             //Node does not exist
             return graph;
         } else {
-            if (nodeList1.contains(secondNodeId)) {
+            if (nodeList1.contains(nodes.getNode2Id())) {
                 //nodeList does have connection to secondNodeId.
-                nodeList1.remove(secondNodeId);
+                nodeList1.remove(nodes.getNode2Id());
             }
         }
         return graph;

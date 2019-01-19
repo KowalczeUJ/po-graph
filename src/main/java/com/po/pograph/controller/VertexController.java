@@ -1,10 +1,11 @@
 package com.po.pograph.controller;
 
 import com.po.pograph.graph.Graph;
+import com.po.pograph.operation.VertexNode;
 import com.po.pograph.service.GraphReadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,13 +23,12 @@ public class VertexController {
         this.graphReadService = graphReadService;
     }
 
-    @ResponseBody
     @PutMapping(path = "/addnode", produces = APPLICATION_JSON_VALUE)
-    public Graph addVertex(@RequestParam("node_id") int nodeId, @RequestParam("precursor_id") int precursorId) {
+    public Graph addVertex(@RequestBody VertexNode nodes) {
         Graph graph = graphReadService.getReadGraph();
 
-        ArrayList<Integer> nodeList =  graph.nodes.get(nodeId);
-        ArrayList<Integer> nodePrecursorList = graph.nodes.get(precursorId);
+        ArrayList<Integer> nodeList =  graph.nodes.get(nodes.getNodeId());
+        ArrayList<Integer> nodePrecursorList = graph.nodes.get(nodes.getPrecursorId());
 
         if (nodePrecursorList == null) {
             return graph;
@@ -37,19 +37,19 @@ public class VertexController {
             //Node does already exists
             return graph;
         } else {
-            graph.nodes.put(nodeId, new ArrayList<>());
+            graph.nodes.put(nodes.getNodeId(), new ArrayList<>());
         }
-        nodePrecursorList.add(nodeId);
+        nodePrecursorList.add(nodes.getNodeId());
 
         return graph;
     }
 
     @ResponseBody
     @PutMapping(path = "/removenode", produces = APPLICATION_JSON_VALUE)
-    public Graph deleteVertex(@RequestParam("node_id") int nodeId) {
+    public Graph deleteVertex(@RequestBody VertexNode nodes) {
         Graph graph = graphReadService.getReadGraph();
 
-        ArrayList<Integer> nodeList =  graph.nodes.get(nodeId);
+        ArrayList<Integer> nodeList =  graph.nodes.get(nodes.getNodeId());
 
         if (nodeList == null) {
             //Node does not exist
@@ -57,7 +57,7 @@ public class VertexController {
         } else {
             if (nodeList.isEmpty()) {
                 //nodeList does not have connection to different nodes.
-                graph.nodes.remove(nodeId);
+                graph.nodes.remove(nodes.getNodeId());
             }
         }
         return graph;
@@ -65,7 +65,7 @@ public class VertexController {
 
     @ResponseBody
     @PutMapping(path = "/swapnodes", produces = APPLICATION_JSON_VALUE)
-    public Graph swapNodes(@RequestParam("node1_id") int firstNodeId, @RequestParam("node1_id") int secondNodeId) {
+    public Graph swapNodes(@RequestBody VertexNode nodes) {
         return null;
     }
 
