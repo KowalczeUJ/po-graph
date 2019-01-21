@@ -2,7 +2,7 @@ package com.po.pograph.controller;
 
 import com.po.pograph.graph.Graph;
 import com.po.pograph.operation.EdgeNode;
-import com.po.pograph.service.GraphReadService;
+import com.po.pograph.service.GraphService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,17 +17,17 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 public class EdgeController {
 
-    private final GraphReadService graphReadService;
+    private final GraphService graphService;
 
     @Autowired
-    public EdgeController(GraphReadService graphReadService) {
-        this.graphReadService = graphReadService;
+    public EdgeController(GraphService graphService) {
+        this.graphService = graphService;
     }
 
     @ResponseBody
     @PutMapping(path = "/addlink", produces = APPLICATION_JSON_VALUE)
     public Graph addEdge(@RequestBody EdgeNode nodes) {
-        Graph graph = graphReadService.getReadGraph();
+        Graph graph = graphService.getReadGraph();
 
         ArrayList<Integer> nodeList1 =  graph.nodes.get(nodes.getNode1Id());
         ArrayList<Integer> nodeList2 =  graph.nodes.get(nodes.getNode2Id());
@@ -47,8 +47,7 @@ public class EdgeController {
     @ResponseBody
     @PutMapping(path = "/removelink", produces = APPLICATION_JSON_VALUE)
     public Graph deleteEdge(@RequestBody EdgeNode nodes) {
-
-        Graph graph = graphReadService.getReadGraph();
+        Graph graph = graphService.getReadGraph();
 
         ArrayList<Integer> nodeList1 = graph.nodes.get(nodes.getNode1Id());
         ArrayList<Integer> nodeList2 = graph.nodes.get(nodes.getNode2Id());

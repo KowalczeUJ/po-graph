@@ -1,7 +1,7 @@
 package com.po.pograph.controller;
 
 import com.po.pograph.graph.Graph;
-import com.po.pograph.service.GraphReadService;
+import com.po.pograph.service.GraphService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,11 +19,11 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @Log4j2
 public class MainController {
 
-    private final GraphReadService graphReadService;
+    private final GraphService graphService;
 
     @Autowired
-    public MainController(GraphReadService graphReadService) {
-        this.graphReadService = graphReadService;
+    public MainController(GraphService graphService) {
+        this.graphService = graphService;
     }
 
     @ResponseBody
@@ -40,8 +40,8 @@ public class MainController {
         } catch (Exception e) {
             log.error("Error while uploading file to the server.");
         }
-        graphReadService.loadGraph(transferFile.getName());
-        return graphReadService.getReadGraph();
+        graphService.loadGraph(transferFile.getName());
+        return graphService.getReadGraph();
     }
 
 }

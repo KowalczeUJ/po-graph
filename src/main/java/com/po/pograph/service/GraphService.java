@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 @Service
-public class GraphReadService {
+public class GraphService {
 
     @Getter
     private Graph readGraph;
